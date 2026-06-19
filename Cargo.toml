@@ -1,0 +1,17 @@
+[package]
+name = "atmos_api_service"
+version = "0.1.0"
+edition = "2024"
+
+# Definiciones sacadas de los mismos crates
+[dependencies]
+axum = "0.8.9" # HTTP router y request-handler library (lib para crear REST apis)
+tokio = { version = "1.52.3", features = ["rt-multi-thread"] } # Runtime for writing network apps (necesario para axum)
+tower = "0.5.3" # Modular Comp for building robust servers (usado para testing) 
+
+#* Necesario instalar diesel_cli
+diesel = {version = "2.3.10", features=["sqlite", "r2d2"]} # Safe, Extensible ORM query builder (usado para conexion con bdd sqlite) 
+serde = { version = "1.0.228", features = ["derive"] }
+dotenvy = "0.15.7"
+chrono = "0.4.45"
+

@@ -1,0 +1,7 @@
+/target
+migrations/*
+models/*
+
+.env
+atmos.db
+diesel.toml
