@@ -127,12 +127,14 @@ dependencies = [
  "chrono",
  "dotenvy",
  "http-body-util",
+ "mime",
  "serde",
  "serde_json",
  "tokio",
  "tower",
  "tower-http",
  "tracing-subscriber",
+ "tuple_join",
  "turso",
 ]
 
@@ -2422,6 +2424,12 @@ dependencies = [
  "tracing-core",
  "tracing-log",
 ]
+
+[[package]]
+name = "tuple_join"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ae565222358314fef3ea725134985d8a11c893b750e536cf59d3afb8e865c766"
 
 [[package]]
 name = "turso"
