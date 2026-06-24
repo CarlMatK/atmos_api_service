@@ -1,81 +1,63 @@
-use std::sync::{Arc, RwLock};
+use crate::dbmon::TursoDB;
 use chrono::Local;
-use dotenvy::dotenv;
-use std::env;
-use diesel::prelude::*;
-use diesel::r2d2::ConnectionManager;
-use diesel::r2d2::Pool;
-use diesel::result::Error;
+use std::sync::{Arc, RwLock};
 
-
-
-#[derive(Clone)]
-struct LastRead{
-    hour : Arc<RwLock<String>>, 
-    date : Arc<RwLock<String>>,
-    timestamp : Arc<RwLock<String>>
-}
-
-#[derive(Clone)]
-struct BatteryStatus{
-    amps_h : Arc<RwLock<u32>>    
-}
-
-#[derive(Clone)]
-struct SqlitePool{
-    //pool : Pool<ConnectionManager<DbConnection>>
-}
-
-// impl SqliteConn {
-//     pub fn from(val: Arc<RwLock<SqliteConnection>>) -> Self {
-//         Self { conn:  }
-//     }
-// }
-impl BatteryStatus {
-    pub fn from(val : u32) -> Self{
-        Self { amps_h: Arc::new(RwLock::new(val))}
-    }
-    pub fn from_fixed(val: Arc<RwLock<u32>>) -> Self {
-        Self { amps_h: val }
-    }
-}
-impl LastRead {
+impl TimeStamp {
     pub fn new() -> Self {
         let now = Local::now();
-        let date_f = Arc::new(RwLock::new(now.format("%Y-%m-%d").to_string()));
-        let hour_f = Arc::new(RwLock::new(now.format("%H/%M/%S").to_string()));
-        let timestamp_f = Arc::new(RwLock::new(now.format("%Y-%m-%d %H/%M/%S").to_string()));
-        Self { 
-            date : date_f,
-            hour : hour_f,
-            timestamp : timestamp_f
+        Self {
+            date: now.format("%Y-%m-%d").to_string(),
+            time: now.format("%H:%M:%S").to_string(),
         }
     }
-}
-
-#[derive(Clone)]    
-struct AppState{
-    pub battery_status : BatteryStatus,
-    pub last_read : LastRead,
-    //pub sqlite_conn : SqliteConn,
+    fn rerun(&mut self) {
+        let now = Local::now();
+        self.date = now.format("%Y-%m-%d").to_string();
+        self.time = now.format("%H:%M:%S").to_string();
+    }
 }
 
 impl AppState {
-    fn new() -> Self {
-        dotenv().ok();
-        
-        // ruta de la db dentro de .env 
-        let database_url = env::var("DATABASE_URL").expect("Falta la variable DATABASE_URL");
-        // conexion a db
-        let sqlite_conn = SqliteConnection::establish(&database_url)
-            .unwrap_or_else(|_| panic!("Error al conectarse a {}", database_url));
-        // valor encapsulado 
-        let fixed_conn = Arc::new(RwLock::new(sqlite_conn));
-        
-        Self{
-            battery_status : BatteryStatus::from(0),
-            last_read : LastRead::new(),
-            //sqlite_conn : SqliteConn::from(fixed_conn)
-        }
+    pub async fn new() -> Arc<AppState> {
+        Arc::new(Self {
+            pool: TursoDB::new().await,
+            station: Arc::new(RwLock::new(Status {
+                battery_lvl: 100,
+                last_stamp: TimeStamp::new(),
+            })),
+        })
     }
+    pub fn stamp_intoparts(&self) -> (String, String) {
+        let lock_clone = Arc::clone(&self.station);
+        let reader = lock_clone.read().unwrap();
+        let s1 = reader.last_stamp.date.clone();
+        let s2 = reader.last_stamp.time.clone();
+        (s1, s2)
+    }
+    pub fn rerun_stamp(&self) {
+        let mut writer = self.station.write().unwrap();
+        writer.last_stamp.rerun();
+    }
+    pub fn upd_battery(&self, batt: u8) {
+        let mut writer = self.station.write().unwrap();
+        writer.battery_lvl = batt;
+    }
+}
+
+#[derive(Clone)]
+pub struct AppState {
+    pub pool: TursoDB,
+    pub station: Arc<RwLock<Status>>,
+}
+
+#[derive(Clone)]
+pub struct Status {
+    battery_lvl: u8,
+    last_stamp: TimeStamp,
+}
+
+#[derive(Clone)]
+struct TimeStamp {
+    date: String,
+    time: String,
 }

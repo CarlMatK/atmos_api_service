@@ -10,8 +10,14 @@ tokio = { version = "1.52.3", features = ["rt-multi-thread"] } # Runtime for wri
 tower = "0.5.3" # Modular Comp for building robust servers (usado para testing) 
 
 #* Necesario instalar diesel_cli
-diesel = {version = "2.3.10", features=["sqlite", "r2d2"]} # Safe, Extensible ORM query builder (usado para conexion con bdd sqlite) 
 serde = { version = "1.0.228", features = ["derive"] }
 dotenvy = "0.15.7"
 chrono = "0.4.45"
+turso = "0.6.1"
+http-body-util = "0.1.3"
+serde_json = "1.0.150"
+tower-http = { version = "0.7.0", features = ["trace"] }
+tracing-subscriber = { version = "0.3.23", features = ["tracing"] }
+mime = "0.3.17"
+tuple_join = "0.1.0"
 

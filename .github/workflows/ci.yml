@@ -1,0 +1,35 @@
+name: Atmos CI pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    name: cargo test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checar existencia de codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar cargo
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Correr pruebas
+        run: cargo test --all-features
+  formato:
+    name: cargo fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checar existencia de codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar rustlang
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt
+      - name: Rustfmt Check
+        uses: actions-rust-lang/rustfmt@v1
