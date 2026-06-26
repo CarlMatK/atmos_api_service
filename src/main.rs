@@ -1,7 +1,8 @@
+#[cfg(test)]
+pub mod tests;
 pub mod dbmon;
 pub mod handlers;
 pub mod state;
-pub mod tests;
 pub mod types;
 
 use axum::{Router, routing::post};

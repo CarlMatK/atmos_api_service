@@ -1,8 +1,7 @@
 use std::sync::Arc;
-
 use crate::types::AtmosData;
-use crate::{AppState, state};
-use axum::{Json, extract::State, http::StatusCode, response::IntoResponse};
+use crate::{AppState};
+use axum::{Json, extract::State, http::StatusCode};
 
 pub async fn fallbacker() -> (StatusCode, &'static str) {
     (StatusCode::NOT_FOUND, "ruta no valida")

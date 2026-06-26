@@ -1,7 +1,7 @@
 [package]
 name = "atmos_api_service"
-version = "0.1.0"
-edition = "2024"
+version = "0.2.0"
+edition = "2026"
 
 # Definiciones sacadas de los mismos crates
 [dependencies]

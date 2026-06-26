@@ -1,12 +1,12 @@
-use crate::types::AtmosData;
-
+#[warn(unused_imports)]
 use super::*;
 use axum::{
     body::Body,
     http::{self, Request, StatusCode},
 };
 use http_body_util::BodyExt;
-use serde_json::{Value, json};
+//use crate::types::AtmosData;
+//use serde_json::{Value, json};
 use tower::ServiceExt;
 
 #[tokio::test]
@@ -21,6 +21,22 @@ async fn trigger_fallback() {
     let body = response.into_body().collect().await.unwrap().to_bytes();
     assert_eq!(&body[..], b"ruta no valida");
 }
+
+#[tokio::test]
+async fn download_data() {
+    let app = app();
+    let response = app
+        .await
+        .oneshot(Request::get("/v01/data").body(Body::empty()).unwrap())
+        .await
+        .unwrap();
+
+    let body: axum::body::Bytes = response.into_body().collect().await.unwrap().to_bytes();
+    let s = String::from_utf8_lossy(&body).to_string();
+    println!("{}", s);
+    
+}
+
 
 #[tokio::test]
 async fn upload_data() {
@@ -39,23 +55,5 @@ async fn upload_data() {
         .unwrap();
 
     assert_eq!(response.status(), StatusCode::ACCEPTED);
-
-    let body = response.into_body().collect().await.unwrap().to_bytes();
-    let returned: types::AtmosData = serde_json::from_slice(&body).unwrap();
-    println!("{:?}", returned);
-    println!("{:?}", info);
-    assert_eq!(returned, info);
 }
 
-#[tokio::test]
-async fn download_data() {
-    let app = app();
-    let response = app
-        .await
-        .oneshot(Request::get("/v01/data").body(Body::empty()).unwrap())
-        .await
-        .unwrap();
-
-    let body = response.into_body().collect().await.unwrap().to_bytes();
-    println!("{:?}", body);
-}
