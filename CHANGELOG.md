@@ -7,6 +7,8 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-26
+
 ### Added
 - Se agrego un modulo `logger` para inicializar la observabilidad del servicio.
 - Se incorporo configuracion base de `tracing` y `tracing-subscriber` para su arranque en la API.
@@ -18,11 +20,12 @@ y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 - El filtro por defecto del logger local ahora usa `warn,atmos_api_service=debug` para priorizar detalle del crate sin habilitar `trace`.
 - El arranque del servicio, la construccion del router y el flujo principal de consultas e inserciones ahora reportan 'hitos' operativos via logging estructurado.
 - Se quito del gitignore el atmos.db para no tener errores al momento de ejecutar los pipeline 
+- Se ejecuto cargo fmt --all -- --check para validar que el formato contraste con el que el pipeline require
 
 ### Fixed
 - Se redujo el ruido de salida en la capa de base de datos al mover diagnosticos a `debug` y dejarlos bajo el control de `RUST_LOG`.
 
-## [0.2.0] - 2026-06-26
+## [0.2.0] - 2026-06-25
 
 ### Added
 - API HTTP con `axum`.

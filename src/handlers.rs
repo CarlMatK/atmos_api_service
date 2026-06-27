@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use crate::types::AtmosReading;
 use crate::AppState;
+use crate::types::AtmosReading;
 use axum::{Json, extract::State, http::StatusCode};
 use tracing::instrument;
 

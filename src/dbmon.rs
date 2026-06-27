@@ -1,8 +1,8 @@
 use turso::{Builder, Connection, Rows};
 
 use crate::types::AtmosReading;
-use tuple_join::{self, Join};
 use tracing::instrument;
+use tuple_join::{self, Join};
 
 #[derive(Clone)]
 pub struct TursoDB {
@@ -27,7 +27,8 @@ impl TursoDB {
         let mut stmt = self.conn.prepare("INSERT INTO reads (date, time, battery_level, wind_speed_kmh, wind_direction_deg, rainfall, uv_index, temperature_c, humidity) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9);").await.expect("Error al preparar el query");
         let timestamp_parts: (String, String) = (date, time);
         let reading_values: (u8, f64, u16, f64, u8, f64, f64) = reading.into_parts();
-        let query_params: (String, String, u8, f64, u16, f64, u8, f64, f64) = timestamp_parts.join(reading_values);
+        let query_params: (String, String, u8, f64, u16, f64, u8, f64, f64) =
+            timestamp_parts.join(reading_values);
 
         stmt.execute(query_params)
             .await

@@ -52,7 +52,10 @@ impl AppState {
     pub fn update_battery(&self, batt: u8) {
         let mut writer = self.station.write().unwrap();
         writer.battery_lvl = batt;
-        tracing::debug!(battery_level = batt, "Nivel de bateria almacenado en el estado");
+        tracing::debug!(
+            battery_level = batt,
+            "Nivel de bateria almacenado en el estado"
+        );
     }
 }
 
