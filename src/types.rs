@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug, PartialEq)]
-pub struct AtmosData {
+pub struct AtmosReading {
     battery_level: u8,
     wind_speed_kmh: f64,
     wind_direction_deg: u16,
@@ -11,7 +11,7 @@ pub struct AtmosData {
     humidity: f64,
 }
 
-impl AtmosData {
+impl AtmosReading {
     pub fn new() -> Self {
         Self {
             battery_level: 100,
@@ -23,17 +23,27 @@ impl AtmosData {
             humidity: 40.0,
         }
     }
-    pub fn into_batt(&self) -> u8 {
-        self.battery_level.clone()
+
+    pub fn battery_level(&self) -> u8 {
+        self.battery_level
     }
+
     pub fn into_parts(&self) -> (u8, f64, u16, f64, u8, f64, f64) {
-        let battlvl = self.battery_level.clone();
-        let windspeed = self.wind_speed_kmh.clone();
-        let winddir = self.wind_direction_deg.clone();
-        let rainmm = self.rainfall.clone();
-        let uv_index = self.uv_index.clone();
-        let tempc = self.temperature_c.clone();
-        let humper = self.humidity.clone();
-        (battlvl, windspeed, winddir, rainmm, uv_index, tempc, humper)
+        let battery_level = self.battery_level;
+        let wind_speed = self.wind_speed_kmh;
+        let wind_direction = self.wind_direction_deg;
+        let rainfall = self.rainfall;
+        let uv_index = self.uv_index;
+        let temperature = self.temperature_c;
+        let humidity = self.humidity;
+        (
+            battery_level,
+            wind_speed,
+            wind_direction,
+            rainfall,
+            uv_index,
+            temperature,
+            humidity,
+        )
     }
 }

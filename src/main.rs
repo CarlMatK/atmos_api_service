@@ -4,31 +4,42 @@ pub mod dbmon;
 pub mod handlers;
 pub mod state;
 pub mod types;
+pub mod logger;
 
 use axum::{Router, routing::post};
-use handlers::fallbacker;
+use handlers::handle_not_found;
 use state::AppState;
 
-use crate::handlers::{download, upload_data};
+use crate::handlers::{create_reading, list_readings};
 
 #[tokio::main]
 async fn main() {
+    logger::implement();
+
+    tracing::info!("Inicializando servicio atmos_api_service");
     let app = app().await;
 
+    tracing::info!("Iniciando app en puerto 3000");
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
-        .expect("No se inicializar al puerto 3000");
+        .expect("Fallo al iniciar en el puerto 3000");
     axum::serve(listener, app)
         .await
         .expect("No se pudo vincular el listener a la app");
 }
 
 async fn app() -> Router {
-    let atmos_endpoints = Router::new().route("/data", post(upload_data).get(download));
-    let v01_endpoints = Router::new().nest("/v01", atmos_endpoints);
+    tracing::info!("Construyendo router y endpoints");
+    let reading_routes = Router::new().route("/data", post(create_reading).get(list_readings));
+    let api_v01_routes = Router::new().nest("/v01", reading_routes);
 
-    Router::new()
-        .merge(v01_endpoints)
-        .fallback(fallbacker)
-        .with_state(AppState::new().await)
+    let app = Router::new()
+        .merge(api_v01_routes)
+        .fallback(handle_not_found)
+        .with_state(AppState::new().await);
+
+    tracing::debug!("Endpoints registrados: POST /v01/data, GET /v01/data");
+    tracing::info!("Router listo");
+
+    app
 }

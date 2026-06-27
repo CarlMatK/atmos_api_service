@@ -3,21 +3,38 @@ name = "atmos_api_service"
 version = "0.2.0"
 edition = "2024"
 
-# Definiciones sacadas de los mismos crates
+## Las dependencias se agrupan por tipo/responsabilidad dentro de la arquitectura del proyecto.
+
 [dependencies]
-axum = "0.8.9" # HTTP router y request-handler library (lib para crear REST apis)
-tokio = { version = "1.52.3", features = ["rt-multi-thread"] } # Runtime for writing network apps (necesario para axum)
-tower = "0.5.3" # Modular Comp for building robust servers (usado para testing) 
 
-#* Necesario instalar diesel_cli
-serde = { version = "1.0.228", features = ["derive"] }
-dotenvy = "0.15.7"
-chrono = "0.4.45"
-turso = "0.6.1"
-http-body-util = "0.1.3"
-serde_json = "1.0.150"
-tower-http = { version = "0.7.0", features = ["trace"] }
-tracing-subscriber = { version = "0.3.23", features = ["tracing"] }
-mime = "0.3.17"
-tuple_join = "0.1.0"
-
+## Presentacion / HTTP API:
+# Librerias para definir rutas, handlers y construir la API REST.
+axum = "0.8.9" # Router HTTP y libreria de handlers para construir la API.
+## Infraestructura async / runtime:
+# Runtime que ejecuta tareas async y permite que el servidor HTTP funcione.
+tokio = { version = "1.52.3", features = ["rt-multi-thread"] } # Runtime async necesario para correr Axum.
+## Middleware / composicion de servicios:
+# Librerias para encadenar comportamiento reusable sobre requests/responses.
+tower = "0.5.3" # Componentes modulares para construir servicios robustos; tambien util en testing.
+tower-http = { version = "0.7.0", features = ["trace"] } # Middleware HTTP listos para usar, incluyendo tracing.
+## Transporte / protocolo HTTP:
+# Utilidades relacionadas con el cuerpo HTTP y tipos MIME.
+http-body-util = "0.1.3" # Utilidades para manipular bodies HTTP.
+mime = "0.3.17" # Tipos MIME como application/json, text/html, etc.
+## Persistencia / acceso a datos:
+# Librerias para conectarse y operar con la base de datos.
+turso = "0.6.1" # Cliente para acceso a la base de datos Turso.
+# Tiempo / fechas:
+# Utilidades para manejar fechas, horas y timestamps.
+chrono = "0.4.45" # Manejo de fechas y tiempo.
+## Serializacion / contrato de datos:
+# Librerias para convertir structs a JSON y viceversa.
+serde = { version = "1.0.228", features = ["derive"] } # Serializacion y deserializacion de datos.
+serde_json = "1.0.150" # Soporte especifico para trabajar con JSON.
+## Observabilidad / logging estructurado:
+# Librerias para instrumentar, filtrar y mostrar eventos del sistema.
+tracing = "0.1.44" # Emite eventos y spans estructurados.
+tracing-subscriber = { version = "0.3.23", features = ["tracing"] } # Recibe, filtra y formatea la salida de tracing.
+## Utilidades generales:
+# Helpers que apoyan logica auxiliar del proyecto.
+tuple_join = "0.1.0" # Utilidad auxiliar para trabajar con tuplas. Definiciones sacadas de los mismos crates

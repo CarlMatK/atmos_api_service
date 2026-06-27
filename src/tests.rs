@@ -5,8 +5,6 @@ use axum::{
     http::{self, Request, StatusCode},
 };
 use http_body_util::BodyExt;
-//use crate::types::AtmosData;
-//use serde_json::{Value, json};
 use tower::ServiceExt;
 
 #[tokio::test]
@@ -34,14 +32,12 @@ async fn download_data() {
     let body: axum::body::Bytes = response.into_body().collect().await.unwrap().to_bytes();
     let s = String::from_utf8_lossy(&body).to_string();
     println!("{}", s);
-    
 }
-
 
 #[tokio::test]
 async fn upload_data() {
     let app = app();
-    let info = types::AtmosData::new();
+    let info = types::AtmosReading::new();
     let gen_json = serde_json::to_string(&info).unwrap();
     let response = app
         .await
@@ -56,4 +52,3 @@ async fn upload_data() {
 
     assert_eq!(response.status(), StatusCode::ACCEPTED);
 }
-

@@ -3,6 +3,4 @@ migrations/*
 models/*
 
 .env
-atmos.db
-atmos.db-wal
 diesel.toml
